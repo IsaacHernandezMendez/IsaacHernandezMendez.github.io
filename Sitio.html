@@ -198,9 +198,22 @@
         }
         
         .memory-card.matched {
-            opacity: 0.6;
-            transform: scale(0.9);
+            opacity: 0.9;
             cursor: default;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.6);
+            border: 3px solid #4CAF50;
+        }
+        
+        .memory-card.matched .card-front {
+            display: none;
+        }
+        
+        .memory-card.matched .card-back {
+            transform: rotateY(0deg);
+        }
+        
+        .memory-card.matched:hover {
+            transform: scale(0.98);
         }
         
         .card-front,
@@ -676,9 +689,14 @@
 
         // Voltear carta
         function flipCard(card) {
-            if (card.classList.contains('flipped') ||
-                card.classList.contains('matched') ||
+            // No permitir voltear cartas ya emparejadas
+            if (card.classList.contains('matched') ||
                 flippedCards.length >= 2) {
+                return;
+            }
+
+            // Si la carta ya está volteada y no está emparejada, no hacer nada
+            if (card.classList.contains('flipped')) {
                 return;
             }
 
@@ -706,8 +724,12 @@
             if (id1 === id2) {
                 // Coincidencia encontrada
                 setTimeout(() => {
+                    // Remover la clase flipped y añadir matched
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
                     card1.classList.add('matched');
                     card2.classList.add('matched');
+
                     matchedPairs++;
                     pairs++;
                     document.getElementById('pairs').textContent = `${pairs}/8`;
